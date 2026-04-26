@@ -1,9 +1,6 @@
 import pandas as pd
 import streamlit as st
-from transformers import pipeline
 
-# Load model
-generator = pipeline("text-generation", model="distilgpt2")
 
 st.title("📧 AI Marketing Email Generator")
 st.markdown("### Generate personalized marketing emails using AI 🚀")
@@ -15,34 +12,18 @@ uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
 
 
 def generate_email(name, interest, purchase):
-    prompt = f"""
-    Write 3 short lines for a marketing message about {interest}.
-    Keep it simple and engaging.
-    """
-
-    result = generator(
-        prompt,
-        max_new_tokens=40,
-        temperature=0.6,
-        repetition_penalty=1.5
-    )
-
-    text = result[0]['generated_text'].replace(prompt, "").strip()
-
     email = f"""Hi {name},
 
-Based on your interest in {interest}, we thought you would love our latest products similar to your recent purchase ({purchase}).
+Based on your interest in {interest}, we thought you would love products similar to your recent purchase ({purchase}).
 
-{text}
+Discover curated {interest.lower()} products designed to enhance your experience and match your lifestyle.
 
-Shop now and upgrade your experience!
+Shop now and unlock exclusive offers just for you!
 
 Best regards,  
 Your Brand Team
 """
-
     return email.strip()
-
 
 # MAIN LOGIC
 if uploaded_file is not None:
