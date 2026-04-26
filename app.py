@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 
-
 st.title("📧 AI Marketing Email Generator")
 st.markdown("### Generate personalized marketing emails using AI 🚀")
 
@@ -25,15 +24,21 @@ Your Brand Team
 """
     return email.strip()
 
+
 # MAIN LOGIC
 if uploaded_file is not None:
 
     df = pd.read_csv(uploaded_file)
-    df.columns = df.columns.str.strip()
+
+    # ✅ HANDLE BOTH GOOD & BROKEN CSV
+    if len(df.columns) == 1:
+        df = df[df.columns[0]].str.split(",", expand=True)
+        df.columns = ["Name", "Age", "Interest", "Last_Purchase", "Location"]
+    else:
+        df.columns = df.columns.str.strip()
 
     st.success("File uploaded successfully!")
 
-    # 👇 ADD HERE
     st.info("Click below to generate emails for all customers")
 
     if st.button("Generate Emails"):
@@ -48,11 +53,12 @@ if uploaded_file is not None:
                 row['Last_Purchase']
             )
 
+            # ✅ FIXED INDENTATION
             emails_data.append({
-    "Name": row['Name'],
-    "Subject": f"Exclusive offers for {row['Interest']} lovers!",
-    "Generated_Email": email
-})
+                "Name": row['Name'],
+                "Subject": f"Exclusive offers for {row['Interest']} lovers!",
+                "Generated_Email": email
+            })
 
         output_df = pd.DataFrame(emails_data)
 
